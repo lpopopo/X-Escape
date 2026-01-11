@@ -1,4 +1,5 @@
 using UnityEngine;
+using XEscape.Managers;
 
 namespace XEscape.EscapeScene
 {
