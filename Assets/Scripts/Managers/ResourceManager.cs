@@ -19,7 +19,7 @@ namespace XEscape.Managers
         [SerializeField] private float staminaConsumptionRate = 1f; // 每秒消耗
         [SerializeField] private float fuelConsumptionRate = 2f;    // 每秒消耗
 
-        [Header("事件")]
+        // 事件
         public event Action<float, float> OnStaminaChanged;
         public event Action<float, float> OnFuelChanged;
         public event Action OnResourcesDepleted;
