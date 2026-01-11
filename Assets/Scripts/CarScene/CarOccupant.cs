@@ -3,6 +3,28 @@ using UnityEngine;
 namespace XEscape.CarScene
 {
     /// <summary>
+    /// 饱腹度状态枚举
+    /// </summary>
+    public enum SatietyStatus
+    {
+        Full,        // 饱腹
+        Normal,      // 正常
+        Hungry,      // 饥饿
+        Starving     // 饥荒
+    }
+
+    /// <summary>
+    /// 伪装度状态枚举
+    /// </summary>
+    public enum DisguiseStatus
+    {
+        CompletelyDifferent,  // 判若两人
+        HardToDetect,         // 难以察觉
+        Suspicious,           // 可疑
+        Identical             // 一模一样
+    }
+
+    /// <summary>
     /// 车内人物信息
     /// </summary>
     public class CarOccupant : MonoBehaviour
@@ -14,6 +36,23 @@ namespace XEscape.CarScene
         [Header("人物状态")]
         [SerializeField] private float health = 100f;
         [SerializeField] private float maxHealth = 100f;
+        
+        [Header("饱腹度设置")]
+        [Tooltip("饱腹度值 (0-100)")]
+        [SerializeField] [Range(0f, 100f)] private float satiety = 50f;
+        [SerializeField] private float satietyFullThreshold = 75f;      // 饱腹阈值
+        [SerializeField] private float satietyNormalThreshold = 50f;   // 正常阈值
+        [SerializeField] private float satietyHungryThreshold = 25f;    // 饥饿阈值
+        
+        [Header("伪装度设置")]
+        [Tooltip("伪装度值 (0-100)，值越高伪装越好")]
+        [SerializeField] [Range(0f, 100f)] private float disguise = 50f;
+        [SerializeField] private float disguiseIdenticalThreshold = 75f;      // 一模一样阈值
+        [SerializeField] private float disguiseHardToDetectThreshold = 50f;  // 难以察觉阈值
+        [SerializeField] private float disguiseSuspiciousThreshold = 25f;      // 可疑阈值
+        
+        [Header("渲染设置")]
+        [SerializeField] private int sortingOrder = 0; // 渲染顺序，确保大于背景的-10
 
         /// <summary>
         /// 获取人物名称
@@ -45,6 +84,150 @@ namespace XEscape.CarScene
         public float GetHealthPercentage()
         {
             return maxHealth > 0 ? health / maxHealth : 0;
+        }
+
+        /// <summary>
+        /// 获取饱腹度值
+        /// </summary>
+        public float GetSatiety()
+        {
+            return satiety;
+        }
+
+        /// <summary>
+        /// 获取饱腹度状态
+        /// </summary>
+        public SatietyStatus GetSatietyStatus()
+        {
+            if (satiety >= satietyFullThreshold)
+                return SatietyStatus.Full;
+            else if (satiety >= satietyNormalThreshold)
+                return SatietyStatus.Normal;
+            else if (satiety >= satietyHungryThreshold)
+                return SatietyStatus.Hungry;
+            else
+                return SatietyStatus.Starving;
+        }
+
+        /// <summary>
+        /// 获取饱腹度状态文本
+        /// </summary>
+        public string GetSatietyStatusText()
+        {
+            switch (GetSatietyStatus())
+            {
+                case SatietyStatus.Full:
+                    return "饱腹";
+                case SatietyStatus.Normal:
+                    return "正常";
+                case SatietyStatus.Hungry:
+                    return "饥饿";
+                case SatietyStatus.Starving:
+                    return "饥荒";
+                default:
+                    return "未知";
+            }
+        }
+
+        /// <summary>
+        /// 获取伪装度值
+        /// </summary>
+        public float GetDisguise()
+        {
+            return disguise;
+        }
+
+        /// <summary>
+        /// 获取伪装度状态
+        /// </summary>
+        public DisguiseStatus GetDisguiseStatus()
+        {
+            if (disguise >= disguiseIdenticalThreshold)
+                return DisguiseStatus.Identical;
+            else if (disguise >= disguiseHardToDetectThreshold)
+                return DisguiseStatus.HardToDetect;
+            else if (disguise >= disguiseSuspiciousThreshold)
+                return DisguiseStatus.Suspicious;
+            else
+                return DisguiseStatus.CompletelyDifferent;
+        }
+
+        /// <summary>
+        /// 获取伪装度状态文本
+        /// </summary>
+        public string GetDisguiseStatusText()
+        {
+            switch (GetDisguiseStatus())
+            {
+                case DisguiseStatus.Identical:
+                    return "一模一样";
+                case DisguiseStatus.HardToDetect:
+                    return "难以察觉";
+                case DisguiseStatus.Suspicious:
+                    return "可疑";
+                case DisguiseStatus.CompletelyDifferent:
+                    return "判若两人";
+                default:
+                    return "未知";
+            }
+        }
+
+        /// <summary>
+        /// 设置饱腹度
+        /// </summary>
+        public void SetSatiety(float value)
+        {
+            satiety = Mathf.Clamp(value, 0f, 100f);
+        }
+
+        /// <summary>
+        /// 设置伪装度
+        /// </summary>
+        public void SetDisguise(float value)
+        {
+            disguise = Mathf.Clamp(value, 0f, 100f);
+        }
+
+        private void Start()
+        {
+            // 确保人物显示在背景前面
+            SetupRenderingOrder();
+        }
+
+        /// <summary>
+        /// 设置渲染顺序，确保人物显示在背景前面
+        /// </summary>
+        private void SetupRenderingOrder()
+        {
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                // 确保使用Default Sorting Layer
+                spriteRenderer.sortingLayerID = 0;
+                
+                // 确保人物的排序顺序大于背景的-10
+                if (spriteRenderer.sortingOrder <= -10)
+                {
+                    spriteRenderer.sortingOrder = sortingOrder;
+                }
+            }
+            
+            // 确保人物的Z位置是0（2D游戏中所有物体的Z都应该是0）
+            Vector3 pos = transform.position;
+            if (Mathf.Abs(pos.z) > 0.01f)
+            {
+                transform.position = new Vector3(pos.x, pos.y, 0);
+            }
+            
+            // 如果是子物体，确保本地Z也是0
+            if (transform.parent != null)
+            {
+                Vector3 localPos = transform.localPosition;
+                if (Mathf.Abs(localPos.z) > 0.01f)
+                {
+                    transform.localPosition = new Vector3(localPos.x, localPos.y, 0);
+                }
+            }
         }
     }
 }
