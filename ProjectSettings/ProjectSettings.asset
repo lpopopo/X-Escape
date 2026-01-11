@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: d203cbabae50a45db8598e30004d034c
+  productGUID: b2dae5ec65ba34fa7a6ec40610a109de
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -134,7 +134,10 @@ PlayerSettings:
   switchNVNMaxPublicSamplerIDCount: 0
   switchMaxWorkerMultiple: 8
   switchNVNGraphicsFirmwareMemory: 32
+<<<<<<< HEAD
   switchGraphicsJobsSyncAfterKick: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
   vulkanNumSwapchainBuffers: 3
   vulkanEnableSetSRGBWrite: 0
   vulkanEnablePreTransform: 0
@@ -509,7 +512,11 @@ PlayerSettings:
   ps4GarlicHeapSize: 2048
   ps4ProGarlicHeapSize: 2560
   playerPrefsMaxSize: 32768
+<<<<<<< HEAD
   ps4Passcode: YiN9LgiXQY7kgKVE7wJOfULGnUIVpfk1
+=======
+  ps4Passcode: OUFXZd0GcKi3c74140cgTKVcd3nWGZHH
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
   ps4pnSessions: 1
   ps4pnPresence: 1
   ps4pnFriends: 1
@@ -571,12 +578,19 @@ PlayerSettings:
   webGLMemoryLinearGrowthStep: 16
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
+<<<<<<< HEAD
+=======
+  webGLEnableWebGPU: 0
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
   webGLPowerPreference: 2
   webGLWebAssemblyTable: 0
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
+<<<<<<< HEAD
   webEnableSubmoduleStrippingCompatibility: 0
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
   scriptingDefineSymbols: {}
   additionalCompilerArguments: {}
   platformArchitecture: {}
@@ -688,5 +702,8 @@ PlayerSettings:
   insecureHttpOption: 0
   androidVulkanDenyFilterList: []
   androidVulkanAllowFilterList: []
+<<<<<<< HEAD
   androidVulkanDeviceFilterListAsset: {fileID: 0}
   d3d12DeviceFilterListAsset: {fileID: 0}
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78

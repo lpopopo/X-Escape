@@ -35,6 +35,26 @@
 - **GameOver**: 游戏失败（体力或油量耗尽）
 - **Victory**: 游戏胜利（到达边境）
 
+## 2D项目设置
+
+本项目已配置为2D项目，主要设置包括：
+
+- **相机模式**: 所有相机自动设置为正交（Orthographic）模式
+- **物理系统**: 使用Physics2D系统
+- **编辑器默认模式**: 2D模式
+- **相机组件**: 使用`Camera2DSetup`脚本自动配置相机为2D模式
+
+### 相机设置
+
+场景中的相机会自动配置为：
+- 正交投影模式（Orthographic）
+- 默认Orthographic Size: 5
+- Z轴位置: -10（2D相机标准位置）
+
+如果需要在场景中手动设置相机，可以：
+1. 添加`Camera2DSetup`组件到相机对象
+2. 或在Inspector中手动设置相机为Orthographic模式
+
 ## 项目结构
 
 ```
@@ -55,7 +75,8 @@ Assets/
 │   │   ├── ResourceUI.cs           # 资源UI
 │   │   └── GameOverUI.cs           # 游戏结束UI
 │   └── Utilities/         # 工具类
-│       └── ClickableObject.cs      # 可点击对象基类
+│       ├── ClickableObject.cs      # 可点击对象基类
+│       └── Camera2DSetup.cs        # 2D相机自动设置
 ├── Scenes/                # 场景文件
 │   ├── CarScene.unity
 │   └── EscapeScene.unity

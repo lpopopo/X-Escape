@@ -29,8 +29,18 @@ namespace XEscape.CarScene
             
             if (mainCamera != null)
             {
+                // 确保相机设置为2D正交模式
+                mainCamera.orthographic = true;
+                mainCamera.orthographicSize = 5f; // 默认2D相机大小
                 originalCameraPosition = mainCamera.transform.position;
                 originalCameraRotation = mainCamera.transform.rotation;
+            }
+            
+            if (mirrorCamera != null)
+            {
+                // 确保后视镜相机也设置为2D正交模式
+                mirrorCamera.orthographic = true;
+                mirrorCamera.orthographicSize = 5f;
             }
         }
 
@@ -116,21 +126,23 @@ namespace XEscape.CarScene
         }
 
         /// <summary>
-        /// 平滑移动相机到目标位置
+        /// 平滑移动相机到目标位置（2D模式，只移动X和Y）
         /// </summary>
         private System.Collections.IEnumerator MoveCameraToTarget(Vector3 targetPosition)
         {
             Vector3 startPosition = mainCamera.transform.position;
+            // 2D模式下，保持Z轴不变，只移动X和Y
+            Vector3 targetPos2D = new Vector3(targetPosition.x, targetPosition.y, startPosition.z);
             float elapsedTime = 0f;
 
             while (elapsedTime < 1f)
             {
                 elapsedTime += Time.deltaTime * cameraTransitionSpeed;
-                mainCamera.transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime);
+                mainCamera.transform.position = Vector3.Lerp(startPosition, targetPos2D, elapsedTime);
                 yield return null;
             }
 
-            mainCamera.transform.position = targetPosition;
+            mainCamera.transform.position = targetPos2D;
         }
     }
 }

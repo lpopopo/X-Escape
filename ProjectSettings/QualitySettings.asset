@@ -6,7 +6,7 @@ QualitySettings:
   serializedVersion: 5
   m_CurrentQuality: 5
   m_QualitySettings:
-  - serializedVersion: 5
+  - serializedVersion: 4
     name: Very Low
     pixelLightCount: 0
     shadows: 0
@@ -34,7 +34,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 0.3
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -59,7 +62,11 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms: []
+<<<<<<< HEAD
   - serializedVersion: 5
+=======
+  - serializedVersion: 4
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     name: Low
     pixelLightCount: 0
     shadows: 0
@@ -87,7 +94,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 0.4
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -112,7 +122,11 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms: []
+<<<<<<< HEAD
   - serializedVersion: 5
+=======
+  - serializedVersion: 4
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     name: Medium
     pixelLightCount: 1
     shadows: 1
@@ -140,7 +154,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 0.7
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -165,7 +182,11 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms: []
+<<<<<<< HEAD
   - serializedVersion: 5
+=======
+  - serializedVersion: 4
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     name: High
     pixelLightCount: 2
     shadows: 2
@@ -193,7 +214,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 1
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -218,7 +242,11 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms: []
+<<<<<<< HEAD
   - serializedVersion: 5
+=======
+  - serializedVersion: 4
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     name: Very High
     pixelLightCount: 3
     shadows: 2
@@ -246,7 +274,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 1.5
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -271,7 +302,11 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms: []
+<<<<<<< HEAD
   - serializedVersion: 5
+=======
+  - serializedVersion: 4
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     name: Ultra
     pixelLightCount: 4
     shadows: 2
@@ -299,7 +334,10 @@ QualitySettings:
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
     lodBias: 2
+<<<<<<< HEAD
     meshLodThreshold: 1
+=======
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     maximumLODLevel: 0
     enableLODCrossFade: 1
     streamingMipmapsActive: 0
@@ -333,10 +371,17 @@ QualitySettings:
     Kepler: 5
     LinuxHeadlessSimulation: 5
     Nintendo Switch: 5
+<<<<<<< HEAD
     PS4: 5
     PS5: 5
     QNX: 5
     ReservedCFE: 5
+=======
+    Nintendo Switch 2: 5
+    PS4: 5
+    PS5: 5
+    QNX: 5
+>>>>>>> 5db88956202b35d57c58eb5570d64b1e7c400c78
     Server: 5
     Standalone: 5
     VisionOS: 5

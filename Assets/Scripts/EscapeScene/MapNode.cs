@@ -10,8 +10,6 @@ namespace XEscape.EscapeScene
         [Header("节点信息")]
         [SerializeField] private string nodeName;
         [SerializeField] private NodeType nodeType;
-        // distanceFromStart 字段暂未使用，保留以备将来扩展
-        // [SerializeField] private int distanceFromStart = 0;
 
         [Header("连接节点")]
         [SerializeField] private MapNode[] connectedNodes;
