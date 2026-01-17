@@ -36,17 +36,19 @@ namespace XEscape.CarScene
         [Header("人物状态")]
         [SerializeField] private float health = 100f;
         [SerializeField] private float maxHealth = 100f;
+        [SerializeField] private bool isDead = false;
+        [SerializeField] private int daysWithZeroSatiety = 0; // 饱腹度为0持续的天数
         
         [Header("饱腹度设置")]
-        [Tooltip("饱腹度值 (0-100)")]
-        [SerializeField] [Range(0f, 100f)] private float satiety = 50f;
+        [Tooltip("饱腹度值 (0-100)，5档=100, 4档=80, 3档=60, 2档=40, 1档=20, 0档=0")]
+        [SerializeField] [Range(0f, 100f)] private float satiety = 100f; // 第一天满档
         [SerializeField] private float satietyFullThreshold = 75f;      // 饱腹阈值
         [SerializeField] private float satietyNormalThreshold = 50f;   // 正常阈值
         [SerializeField] private float satietyHungryThreshold = 25f;    // 饥饿阈值
         
         [Header("伪装度设置")]
-        [Tooltip("伪装度值 (0-100)，值越高伪装越好")]
-        [SerializeField] [Range(0f, 100f)] private float disguise = 50f;
+        [Tooltip("伪装度值 (0-100)，值越高伪装越好，5档=100, 4档=80, 3档=60, 2档=40, 1档=20, 0档=0")]
+        [SerializeField] [Range(0f, 100f)] private float disguise = 100f; // 第一天满档
         [SerializeField] private float disguiseIdenticalThreshold = 75f;      // 一模一样阈值
         [SerializeField] private float disguiseHardToDetectThreshold = 50f;  // 难以察觉阈值
         [SerializeField] private float disguiseSuspiciousThreshold = 25f;      // 可疑阈值
@@ -138,18 +140,18 @@ namespace XEscape.CarScene
         }
 
         /// <summary>
-        /// 获取伪装度状态
+        /// 获取伪装度状态（值越高伪装越好）
         /// </summary>
         public DisguiseStatus GetDisguiseStatus()
         {
             if (disguise >= disguiseIdenticalThreshold)
-                return DisguiseStatus.Identical;
+                return DisguiseStatus.CompletelyDifferent; // 判若两人 = 最高（伪装最好）
             else if (disguise >= disguiseHardToDetectThreshold)
-                return DisguiseStatus.HardToDetect;
+                return DisguiseStatus.HardToDetect; // 难以察觉 = 较高
             else if (disguise >= disguiseSuspiciousThreshold)
-                return DisguiseStatus.Suspicious;
+                return DisguiseStatus.Suspicious; // 可疑 = 较低
             else
-                return DisguiseStatus.CompletelyDifferent;
+                return DisguiseStatus.Identical; // 一模一样 = 最低（伪装最差）
         }
 
         /// <summary>
@@ -186,6 +188,71 @@ namespace XEscape.CarScene
         public void SetDisguise(float value)
         {
             disguise = Mathf.Clamp(value, 0f, 100f);
+        }
+
+        /// <summary>
+        /// 降低一档饱腹度（减20）
+        /// </summary>
+        public void DecreaseSatietyLevel()
+        {
+            if (isDead) return;
+            
+            satiety = Mathf.Max(0f, satiety - 20f);
+            
+            // 检查饱腹度是否为0
+            if (satiety <= 0f)
+            {
+                daysWithZeroSatiety++;
+                if (daysWithZeroSatiety >= 2)
+                {
+                    Die();
+                }
+            }
+            else
+            {
+                daysWithZeroSatiety = 0; // 重置计数
+            }
+        }
+
+        /// <summary>
+        /// 降低一档伪装度（减20）
+        /// </summary>
+        public void DecreaseDisguiseLevel()
+        {
+            if (isDead) return;
+            disguise = Mathf.Max(0f, disguise - 20f);
+        }
+
+        /// <summary>
+        /// 角色死亡
+        /// </summary>
+        private void Die()
+        {
+            if (isDead) return;
+            
+            isDead = true;
+            gameObject.SetActive(false); // 隐藏角色
+        }
+
+        /// <summary>
+        /// 检查角色是否死亡
+        /// </summary>
+        public bool IsDead() => isDead;
+
+        /// <summary>
+        /// 获取饱腹度档位（0-5）
+        /// </summary>
+        public int GetSatietyLevel()
+        {
+            return Mathf.FloorToInt(satiety / 20f);
+        }
+
+        /// <summary>
+        /// 获取伪装度档位（0-5）
+        /// </summary>
+        public int GetDisguiseLevel()
+        {
+            return Mathf.FloorToInt(disguise / 20f);
         }
 
         private void Start()

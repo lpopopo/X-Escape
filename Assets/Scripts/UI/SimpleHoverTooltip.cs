@@ -22,7 +22,7 @@ namespace XEscape.UI
         [SerializeField] private string[] targetNames = { "father", "mother", "mather", "爸爸", "妈妈" };
         
         [Header("调试")]
-        [SerializeField] private bool enableDebugLog = true;
+        [SerializeField] private bool enableDebugLog = false; // 调试日志开关
         
         private Camera mainCamera;
         private Canvas canvas;
@@ -31,8 +31,6 @@ namespace XEscape.UI
 
         private void Awake()
         {
-            Debug.Log("SimpleHoverTooltip: Awake 开始");
-            
             mainCamera = Camera.main;
             if (mainCamera == null)
                 mainCamera = FindFirstObjectByType<Camera>();
@@ -41,21 +39,22 @@ namespace XEscape.UI
             {
                 Debug.LogError("SimpleHoverTooltip: 未找到相机！");
             }
-            else
-            {
-                Debug.Log($"SimpleHoverTooltip: 找到相机 {mainCamera.name}, 正交模式: {mainCamera.orthographic}");
-            }
 
             // 创建或找到Canvas
             canvas = GetComponentInParent<Canvas>();
             if (canvas == null)
             {
-                GameObject canvasObj = new GameObject("TooltipCanvas");
-                canvas = canvasObj.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                canvasObj.AddComponent<CanvasScaler>();
-                canvasObj.AddComponent<GraphicRaycaster>();
-                Debug.Log("SimpleHoverTooltip: 创建了新Canvas");
+                // 尝试查找场景中已有的 Canvas
+                canvas = FindFirstObjectByType<Canvas>();
+                if (canvas == null)
+                {
+                    GameObject canvasObj = new GameObject("TooltipCanvas");
+                    canvas = canvasObj.AddComponent<Canvas>();
+                    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                    canvas.sortingOrder = 100; // 确保在最上层
+                    canvasObj.AddComponent<CanvasScaler>();
+                    canvasObj.AddComponent<GraphicRaycaster>();
+                }
             }
 
             // 创建TooltipPanel
@@ -68,35 +67,43 @@ namespace XEscape.UI
             {
                 tooltipRect = tooltipPanel.GetComponent<RectTransform>();
                 tooltipPanel.SetActive(false);
-                Debug.Log("SimpleHoverTooltip: TooltipPanel 已创建");
+            }
+            else
+            {
+                Debug.LogError("SimpleHoverTooltip: TooltipPanel 创建失败！");
             }
         }
 
         private void Start()
         {
-            Debug.Log("SimpleHoverTooltip: Start 被调用");
-            
-            // 检查所有CarOccupant
-            CarOccupant[] occupants = FindObjectsByType<CarOccupant>(FindObjectsSortMode.None);
-            Debug.Log($"SimpleHoverTooltip: 找到 {occupants.Length} 个CarOccupant");
-            
-            foreach (var occ in occupants)
-            {
-                string name = occ.GetName();
-                Collider2D col = occ.GetComponent<Collider2D>();
-                Debug.Log($"  - {occ.gameObject.name}: Name={name}, HasCollider={col != null}, ColliderType={col?.GetType().Name}");
-            }
+            // 初始化完成，无需日志
         }
 
         private void Update()
         {
+            // 检查是否有天数标题正在显示，如果有则禁用交互
+            DayTitleDisplay titleDisplay = FindFirstObjectByType<DayTitleDisplay>();
+            if (titleDisplay != null && titleDisplay.IsShowing())
+            {
+                if (tooltipPanel != null && tooltipPanel.activeSelf)
+                {
+                    tooltipPanel.SetActive(false);
+                }
+                return;
+            }
+
             CheckMouseHover();
             UpdateTooltipPosition();
         }
 
         private void CheckMouseHover()
         {
-            if (mainCamera == null) return;
+            if (mainCamera == null)
+            {
+                if (enableDebugLog)
+                    Debug.LogWarning("SimpleHoverTooltip: mainCamera 为 null");
+                return;
+            }
 
             // 获取鼠标世界坐标
             Vector3 mouseWorldPos = GetMouseWorldPosition();
@@ -107,6 +114,9 @@ namespace XEscape.UI
 
             foreach (CarOccupant occupant in occupants)
             {
+                if (occupant == null || !occupant.gameObject.activeInHierarchy) continue;
+                if (occupant.IsDead()) continue; // 跳过已死亡的角色
+                
                 // 检查名称是否匹配
                 string occupantName = occupant.GetName().ToLower();
                 bool isTarget = false;
@@ -123,14 +133,13 @@ namespace XEscape.UI
 
                 // 检查Collider
                 Collider2D col = occupant.GetComponent<Collider2D>();
-                if (col != null)
+                if (col == null || !col.enabled) continue;
+                
+                // 使用OverlapPoint检测
+                if (col.OverlapPoint(mouseWorldPos))
                 {
-                    // 使用OverlapPoint检测
-                    if (col.OverlapPoint(mouseWorldPos))
-                    {
-                        hoveredOccupant = occupant;
-                        break;
-                    }
+                    hoveredOccupant = occupant;
+                    break;
                 }
             }
 
@@ -140,8 +149,6 @@ namespace XEscape.UI
                 if (currentOccupant != hoveredOccupant)
                 {
                     ShowTooltip(hoveredOccupant);
-                    if (enableDebugLog)
-                        Debug.Log($"显示提示: {hoveredOccupant.GetName()}");
                 }
             }
             else
@@ -202,22 +209,11 @@ namespace XEscape.UI
 
         private void UpdateTooltipContent(CarOccupant occupant)
         {
-            if (occupant == null)
-            {
-                Debug.LogWarning("SimpleHoverTooltip: occupant 为 null");
-                return;
-            }
-
-            Debug.Log($"SimpleHoverTooltip: 更新提示内容 - {occupant.GetName()}");
+            if (occupant == null) return;
 
             if (nameText != null)
             {
                 nameText.text = occupant.GetName();
-                Debug.Log($"SimpleHoverTooltip: 名称文本已设置: {nameText.text}");
-            }
-            else
-            {
-                Debug.LogWarning("SimpleHoverTooltip: nameText 为 null");
             }
 
             if (satietyText != null)
@@ -225,11 +221,6 @@ namespace XEscape.UI
                 string status = occupant.GetSatietyStatusText();
                 float value = occupant.GetSatiety();
                 satietyText.text = $"饱腹度: {status} ({value:F0}%)";
-                Debug.Log($"SimpleHoverTooltip: 饱腹度文本已设置: {satietyText.text}");
-            }
-            else
-            {
-                Debug.LogWarning("SimpleHoverTooltip: satietyText 为 null");
             }
 
             if (disguiseText != null)
@@ -237,11 +228,6 @@ namespace XEscape.UI
                 string status = occupant.GetDisguiseStatusText();
                 float value = occupant.GetDisguise();
                 disguiseText.text = $"伪装度: {status} ({value:F0}%)";
-                Debug.Log($"SimpleHoverTooltip: 伪装度文本已设置: {disguiseText.text}");
-            }
-            else
-            {
-                Debug.LogWarning("SimpleHoverTooltip: disguiseText 为 null");
             }
         }
 
