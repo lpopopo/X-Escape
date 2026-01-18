@@ -55,6 +55,9 @@ namespace XEscape.CarScene
         
         [Header("渲染设置")]
         [SerializeField] private int sortingOrder = 0; // 渲染顺序，确保大于背景的-10
+        
+        [Header("物品持有")]
+        private ItemDropZone itemDropZone; // 物品放置区域
 
         /// <summary>
         /// 获取人物名称
@@ -259,6 +262,56 @@ namespace XEscape.CarScene
         {
             // 确保人物显示在背景前面
             SetupRenderingOrder();
+            
+            // 添加或获取ItemDropZone组件
+            itemDropZone = GetComponent<ItemDropZone>();
+            if (itemDropZone == null)
+            {
+                // 创建ItemDropZone子对象
+                GameObject dropZoneObj = new GameObject("ItemDropZone");
+                dropZoneObj.transform.SetParent(transform);
+                dropZoneObj.transform.localPosition = Vector3.zero;
+                itemDropZone = dropZoneObj.AddComponent<ItemDropZone>();
+            }
+        }
+        
+        /// <summary>
+        /// 获取物品放置区域
+        /// </summary>
+        public ItemDropZone GetItemDropZone()
+        {
+            // 如果 itemDropZone 为 null，尝试初始化
+            if (itemDropZone == null)
+            {
+                itemDropZone = GetComponent<ItemDropZone>();
+                if (itemDropZone == null)
+                {
+                    // 创建ItemDropZone子对象
+                    GameObject dropZoneObj = new GameObject("ItemDropZone");
+                    dropZoneObj.transform.SetParent(transform);
+                    dropZoneObj.transform.localPosition = Vector3.zero;
+                    itemDropZone = dropZoneObj.AddComponent<ItemDropZone>();
+                }
+            }
+            return itemDropZone;
+        }
+        
+        /// <summary>
+        /// 检查是否有食物
+        /// </summary>
+        public bool HasFood()
+        {
+            if (itemDropZone == null) return false;
+            return itemDropZone.HasFood();
+        }
+        
+        /// <summary>
+        /// 检查是否有伪装物品
+        /// </summary>
+        public bool HasDisguise()
+        {
+            if (itemDropZone == null) return false;
+            return itemDropZone.HasDisguise();
         }
 
         /// <summary>

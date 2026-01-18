@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using XEscape.CarScene;
+using XEscape.Inventory;
 
 namespace XEscape.UI
 {
@@ -28,6 +29,7 @@ namespace XEscape.UI
         private Canvas canvas;
         private RectTransform tooltipRect;
         private CarOccupant currentOccupant;
+        private StockItem currentItem;
 
         private void Awake()
         {
@@ -108,16 +110,41 @@ namespace XEscape.UI
             // 获取鼠标世界坐标
             Vector3 mouseWorldPos = GetMouseWorldPosition();
             
-            // 检测所有CarOccupant，检查鼠标是否在其Collider内
+            // 优先检测物品（食物/伪装物品）
+            StockItem hoveredItem = null;
+            StockItem[] allItems = FindObjectsByType<StockItem>(FindObjectsSortMode.None);
+            
+            foreach (StockItem item in allItems)
+            {
+                if (item == null || !item.gameObject.activeInHierarchy) continue;
+                
+                Collider2D col = item.GetComponent<Collider2D>();
+                if (col != null && col.enabled && col.OverlapPoint(mouseWorldPos))
+                {
+                    hoveredItem = item;
+                    break;
+                }
+            }
+            
+            // 如果悬停在物品上，显示物品库存信息
+            if (hoveredItem != null)
+            {
+                if (currentItem != hoveredItem)
+                {
+                    ShowItemTooltip(hoveredItem);
+                }
+                return;
+            }
+            
+            // 否则检测角色
             CarOccupant[] occupants = FindObjectsByType<CarOccupant>(FindObjectsSortMode.None);
             CarOccupant hoveredOccupant = null;
 
             foreach (CarOccupant occupant in occupants)
             {
                 if (occupant == null || !occupant.gameObject.activeInHierarchy) continue;
-                if (occupant.IsDead()) continue; // 跳过已死亡的角色
+                if (occupant.IsDead()) continue;
                 
-                // 检查名称是否匹配
                 string occupantName = occupant.GetName().ToLower();
                 bool isTarget = false;
                 foreach (string targetName in targetNames)
@@ -131,11 +158,9 @@ namespace XEscape.UI
 
                 if (!isTarget) continue;
 
-                // 检查Collider
                 Collider2D col = occupant.GetComponent<Collider2D>();
                 if (col == null || !col.enabled) continue;
                 
-                // 使用OverlapPoint检测
                 if (col.OverlapPoint(mouseWorldPos))
                 {
                     hoveredOccupant = occupant;
@@ -153,7 +178,7 @@ namespace XEscape.UI
             }
             else
             {
-                if (currentOccupant != null)
+                if (currentOccupant != null || currentItem != null)
                 {
                     HideTooltip();
                 }
@@ -190,6 +215,7 @@ namespace XEscape.UI
         private void ShowTooltip(CarOccupant occupant)
         {
             currentOccupant = occupant;
+            currentItem = null;
             
             if (tooltipPanel != null)
             {
@@ -197,10 +223,23 @@ namespace XEscape.UI
                 UpdateTooltipContent(occupant);
             }
         }
+        
+        private void ShowItemTooltip(StockItem item)
+        {
+            currentItem = item;
+            currentOccupant = null;
+            
+            if (tooltipPanel != null)
+            {
+                tooltipPanel.SetActive(true);
+                UpdateItemTooltipContent(item);
+            }
+        }
 
         private void HideTooltip()
         {
             currentOccupant = null;
+            currentItem = null;
             if (tooltipPanel != null)
             {
                 tooltipPanel.SetActive(false);
@@ -228,6 +267,39 @@ namespace XEscape.UI
                 string status = occupant.GetDisguiseStatusText();
                 float value = occupant.GetDisguise();
                 disguiseText.text = $"伪装度: {status} ({value:F0}%)";
+            }
+        }
+        
+        private void UpdateItemTooltipContent(StockItem item)
+        {
+            if (item == null) return;
+            
+            Managers.ItemManager itemManager = FindFirstObjectByType<Managers.ItemManager>();
+            int foodStock = itemManager != null ? itemManager.GetFoodStock() : 0;
+            int disguiseStock = itemManager != null ? itemManager.GetDisguiseStock() : 0;
+            
+            ItemType itemType = item.GetItemType();
+            
+            if (nameText != null)
+            {
+                nameText.text = itemType == ItemType.Food ? "食物" : "伪装物品";
+            }
+            
+            if (satietyText != null)
+            {
+                if (itemType == ItemType.Food)
+                {
+                    satietyText.text = $"食物库存: {foodStock}";
+                }
+                else
+                {
+                    satietyText.text = $"伪装物品库存: {disguiseStock}";
+                }
+            }
+            
+            if (disguiseText != null)
+            {
+                disguiseText.text = "";
             }
         }
 

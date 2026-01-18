@@ -174,6 +174,9 @@ MonoBehaviour:
   OnGameEnd:
     m_PersistentCalls:
       m_Calls: []
+  OnGameWin:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &55168600
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +316,8 @@ Transform:
   m_LocalPosition: {x: -7.61, y: -3.53, z: 0}
   m_LocalScale: {x: 1.8031, y: 1.8031, z: 1.8031}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2080617974}
   m_Father: {fileID: 1750294994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &276802203
@@ -332,6 +336,8 @@ MonoBehaviour:
   occupantPortrait: {fileID: 0}
   health: 100
   maxHealth: 100
+  isDead: 0
+  daysWithZeroSatiety: 0
   satiety: 50
   satietyFullThreshold: 75
   satietyNormalThreshold: 50
@@ -387,6 +393,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.52, y: 5.12}
   m_EdgeRadius: 0
+--- !u!1 &283494936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 283494937}
+  m_Layer: 0
+  m_Name: ItemContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &283494937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283494936}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1750294994}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &334538414
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,8 +615,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1005,7 +1042,8 @@ Transform:
   m_LocalPosition: {x: 6.3591, y: -3.7169, z: 0}
   m_LocalScale: {x: 0.8889226, y: 0.8889226, z: 0.8889226}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1623297247}
   m_Father: {fileID: 1750294994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1284117513
@@ -1024,6 +1062,8 @@ MonoBehaviour:
   occupantPortrait: {fileID: 0}
   health: 100
   maxHealth: 100
+  isDead: 0
+  daysWithZeroSatiety: 0
   satiety: 50
   satietyFullThreshold: 75
   satietyNormalThreshold: 50
@@ -1131,6 +1171,54 @@ Transform:
   - {fileID: 605361656}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1623297246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1623297247}
+  - component: {fileID: 1623297248}
+  m_Layer: 0
+  m_Name: ItemDropZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1623297247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623297246}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.1249573, y: 1.1249573, z: 1.1249573}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1284117512}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1623297248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623297246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba3015e5e21746a691251d75c8a20cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::XEscape.CarScene.ItemDropZone
+  occupant: {fileID: 0}
+  itemDisplayParent: {fileID: 0}
+  currentFoodItem: {fileID: 0}
+  currentDisguiseItem: {fileID: 0}
 --- !u!1 &1674839690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1254,6 +1342,7 @@ Transform:
   - {fileID: 1284117512}
   - {fileID: 276802202}
   - {fileID: 478264984}
+  - {fileID: 283494937}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1935603734
@@ -1468,6 +1557,106 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1972512620}
   m_CullTransparentMesh: 1
+--- !u!1 &1995618728
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1995618730}
+  - component: {fileID: 1995618729}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1995618729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995618728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4aad5ace2b9148bfbc42331b0570bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::XEscape.Managers.ItemManager
+  foodPrefab: {fileID: 9209965627854821417, guid: e0bd90acc4e2c4df29f19c81bbca0564, type: 3}
+  disguisePrefab: {fileID: 4194265550124448630, guid: 9888bfea8a55e4fe3bfa3311b70524aa, type: 3}
+  foodSprite: {fileID: 0}
+  disguiseSprite: {fileID: 0}
+  itemScale: {x: 0.1, y: 0.1, z: 0.1}
+  initialFoodCount: 2
+  initialDisguiseCount: 2
+  itemSpawnParent: {fileID: 0}
+--- !u!4 &1995618730
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995618728}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2080617973
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2080617974}
+  - component: {fileID: 2080617975}
+  m_Layer: 0
+  m_Name: ItemDropZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2080617974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080617973}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5546004, y: 0.5546004, z: 0.5546004}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 276802202}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2080617975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080617973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba3015e5e21746a691251d75c8a20cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::XEscape.CarScene.ItemDropZone
+  occupant: {fileID: 0}
+  itemDisplayParent: {fileID: 0}
+  currentFoodItem: {fileID: 0}
+  currentDisguiseItem: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1478,3 +1667,4 @@ SceneRoots:
   - {fileID: 1750294994}
   - {fileID: 623290641}
   - {fileID: 53786673}
+  - {fileID: 1995618730}
