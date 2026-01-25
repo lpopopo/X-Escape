@@ -18,12 +18,28 @@ namespace XEscape.PickupScene
 
         private Rigidbody2D rb;
         private float horizontalInput;
+        private bool isPickupEnabled = true; // 是否允许拾取
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0f; // 玩家不受重力影响
             rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+            
+            // 确保 Player Tag 被正确设置
+            if (!gameObject.CompareTag("Player"))
+            {
+                // 尝试设置 Player tag
+                try
+                {
+                    gameObject.tag = "Player";
+                    Debug.Log($"[PlayerController] 已自动设置 Player Tag");
+                }
+                catch
+                {
+                    Debug.LogWarning($"[PlayerController] 无法设置 Player Tag，请确保在 TagManager 中已创建 Player 标签");
+                }
+            }
         }
 
         private void Update()
@@ -61,12 +77,28 @@ namespace XEscape.PickupScene
         }
 
         /// <summary>
+        /// 设置是否允许拾取
+        /// </summary>
+        public void SetPickupEnabled(bool enabled)
+        {
+            isPickupEnabled = enabled;
+            Debug.Log($"[PlayerController] 拾取功能已{(enabled ? "启用" : "禁用")}");
+        }
+
+        /// <summary>
         /// 拾取物资
         /// </summary>
         /// <returns>是否成功拾取</returns>
         public bool PickupItem(PickupItem item)
         {
             Debug.Log($"[PlayerController] PickupItem 被调用! 物品类型: {item.itemType}");
+
+            // 如果拾取已禁用，直接返回
+            if (!isPickupEnabled)
+            {
+                Debug.Log("[PlayerController] 拾取功能已禁用，无法拾取物品");
+                return false;
+            }
 
             if (inventoryManager != null)
             {
