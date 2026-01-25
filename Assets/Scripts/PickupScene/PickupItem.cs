@@ -52,15 +52,16 @@ namespace XEscape.PickupScene
                 {
                     case ItemType.Food:
                         spriteRenderer.color = Color.green;
-                        if (itemText != null) itemText.text = "食物";
+                        // 使用英文避免中文字体问题，或者可以移除文本显示
+                        if (itemText != null) itemText.text = "Food";
                         break;
                     case ItemType.Fuel:
                         spriteRenderer.color = Color.yellow;
-                        if (itemText != null) itemText.text = "油料";
+                        if (itemText != null) itemText.text = "Fuel";
                         break;
                     case ItemType.Medicine:
                         spriteRenderer.color = Color.red;
-                        if (itemText != null) itemText.text = "药品";
+                        if (itemText != null) itemText.text = "Medicine";
                         break;
                 }
             }
@@ -78,39 +79,32 @@ namespace XEscape.PickupScene
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log($"[PickupItem] OnTriggerEnter2D 被触发! 碰撞对象: {other.name}, Tag: {other.tag}");
-
             if (isPickedUp) return;
 
-            // 检测是否被玩家拾取
-            if (other.CompareTag("Player"))
+            // 检测是否被玩家拾取 - 优先检查 PlayerController 组件，这样即使 Tag 未设置也能工作
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player != null)
             {
-                Debug.Log($"[PickupItem] 检测到Player标签!");
-                PlayerController player = other.GetComponent<PlayerController>();
-                if (player != null)
+                Debug.Log($"[PickupItem] 检测到PlayerController组件，开始拾取 {itemType}");
+                bool success = player.PickupItem(this);
+                if (success)
                 {
-                    Debug.Log($"[PickupItem] 找到PlayerController，开始拾取 {itemType}");
-                    bool success = player.PickupItem(this);
-                    if (success)
-                    {
-                        isPickedUp = true;
-                        Destroy(gameObject);
-                        Debug.Log($"[PickupItem] 物品已销毁");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[PickupItem] 拾取失败，物品保留（可能背包已满）");
-                    }
+                    isPickedUp = true;
+                    Destroy(gameObject);
+                    Debug.Log($"[PickupItem] 物品已销毁");
                 }
                 else
                 {
-                    Debug.LogError($"[PickupItem] Player对象上没有PlayerController组件!");
+                    Debug.LogWarning($"[PickupItem] 拾取失败，物品保留（可能背包已满）");
+                    // 提示消息已通过InventoryManager的事件系统显示，这里不需要额外处理
                 }
             }
-            else
+            // 如果 Tag 是 Player 但没有 PlayerController，给出警告
+            else if (other.CompareTag("Player"))
             {
-                Debug.Log($"[PickupItem] 碰撞对象不是Player，Tag是: {other.tag}");
+                Debug.LogWarning($"[PickupItem] 碰撞对象有Player标签但没有PlayerController组件! 对象: {other.name}");
             }
+            // 其他情况不输出日志，避免日志过多
         }
 
         private void DestroyItem()

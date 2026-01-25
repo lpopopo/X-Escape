@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace XEscape.PickupScene
 {
@@ -21,7 +24,46 @@ namespace XEscape.PickupScene
 
         private void Start()
         {
+            // 检查 itemPrefab 是否已分配
+            if (itemPrefab == null)
+            {
+                itemPrefab = TryLoadItemPrefab();
+                
+                if (itemPrefab == null)
+                {
+                    Debug.LogError("[ItemSpawner] itemPrefab 未分配！请在 Inspector 中分配 ItemPrefab 预制体。");
+                    Debug.LogError("[ItemSpawner] 预制体路径应该是: Assets/Prefabs/ItemPrefab.prefab");
+                    return;
+                }
+            }
+
             StartSpawning();
+        }
+
+        /// <summary>
+        /// 尝试加载 ItemPrefab，优先从 Resources 加载，编辑器中也可以从 Prefabs 文件夹加载
+        /// </summary>
+        private GameObject TryLoadItemPrefab()
+        {
+            // 方法1: 尝试从 Resources 加载（运行时和编辑器都可用）
+            GameObject loadedPrefab = Resources.Load<GameObject>("ItemPrefab");
+            if (loadedPrefab != null)
+            {
+                Debug.Log("[ItemSpawner] 已从 Resources 自动加载 ItemPrefab");
+                return loadedPrefab;
+            }
+
+#if UNITY_EDITOR
+            // 方法2: 在编辑器中，尝试从 Prefabs 文件夹直接加载
+            loadedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/ItemPrefab.prefab");
+            if (loadedPrefab != null)
+            {
+                Debug.Log("[ItemSpawner] 已从 Prefabs 文件夹自动加载 ItemPrefab（仅编辑器模式）");
+                return loadedPrefab;
+            }
+#endif
+
+            return null;
         }
 
         public void StartSpawning()
@@ -50,6 +92,14 @@ namespace XEscape.PickupScene
 
         private void SpawnItem()
         {
+            // 检查 itemPrefab 是否已分配
+            if (itemPrefab == null)
+            {
+                Debug.LogError("[ItemSpawner] itemPrefab 未分配！请在 Inspector 中分配 ItemPrefab 预制体。");
+                StopSpawning();
+                return;
+            }
+
             // 随机生成位置
             float randomX = Random.Range(-spawnRangeX / 2, spawnRangeX / 2);
             Vector3 spawnPosition = new Vector3(randomX, spawnHeight, 0);
@@ -63,6 +113,10 @@ namespace XEscape.PickupScene
             {
                 ItemType randomType = availableItemTypes[Random.Range(0, availableItemTypes.Length)];
                 pickupItem.Initialize(randomType);
+            }
+            else
+            {
+                Debug.LogWarning("[ItemSpawner] 实例化的物品上没有 PickupItem 组件！");
             }
         }
 
