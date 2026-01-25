@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class backGround : MonoBehaviour
 {
+    [Header("渲染设置")]
+    [SerializeField] private int sortingOrder = -10; // 背景应该在最后面
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     // 可挂在背景物体上
 void Start()
@@ -27,18 +30,50 @@ void Start()
         
         transform.localScale = new Vector3(scale, scale, 1);
         
-        // 确保背景位置在相机前方
-        transform.position = new Vector3(Camera.main.transform.position.x, 
-                                         Camera.main.transform.position.y, 
-                                         transform.position.z);
+        // 设置渲染顺序
+        spriteRenderer.sortingOrder = sortingOrder;
+        spriteRenderer.sortingLayerID = 0; // Default layer
+        
+        // 确保背景位置在相机前方（保持Z=0，使用本地坐标）
+        if (transform.parent != null)
+        {
+            // 如果是相机的子物体，使用本地坐标
+            transform.localPosition = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            // 如果不是子物体，使用世界坐标，但保持Z=0
+            transform.position = new Vector3(Camera.main.transform.position.x, 
+                                             Camera.main.transform.position.y, 
+                                             0);
+        }
     }
     else
     {
         // 如果没有精灵渲染器，使用原来的方法，并添加缓冲
         transform.localScale = new Vector3(cameraWidth * 1.15f, cameraHeight * 1.15f, 1);
-        transform.position = new Vector3(Camera.main.transform.position.x, 
-                                         Camera.main.transform.position.y, 
-                                         transform.position.z);
+        
+        // 设置渲染顺序（如果有SpriteRenderer）
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingOrder = sortingOrder;
+            sr.sortingLayerID = 0; // Default layer
+        }
+        
+        // 确保背景位置在相机前方（保持Z=0）
+        if (transform.parent != null)
+        {
+            // 如果是相机的子物体，使用本地坐标
+            transform.localPosition = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            // 如果不是子物体，使用世界坐标，但保持Z=0
+            transform.position = new Vector3(Camera.main.transform.position.x, 
+                                             Camera.main.transform.position.y, 
+                                             0);
+        }
     }
 }
 
